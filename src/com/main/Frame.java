@@ -41,7 +41,7 @@ public class Frame extends JFrame {
 	private String filePath;
 	private String[] content;
 	private static Vector tools = new Vector();
-	private static ReadFile tmp;
+	private static ReadFileApi tmp;
 	private static String fileName;
 	protected int chuckRows;
 	protected int chuckColumns;
@@ -207,7 +207,7 @@ public class Frame extends JFrame {
 					filePath = file.getPath();
 					fileName = file.getName();
 					setFrameTitle(fileName);
-					ReadFile rf = new ReadFile(filePath);
+					ReadFileApi rf = new OutputPrg(filePath);
 					tmp = rf;
 					rf.analyze();
 					tools = rf.getTools();
@@ -234,7 +234,6 @@ public class Frame extends JFrame {
 						for (int i = 0; i < chuck.length; i++) {
 							chuck[i].setText(str.substring(0, 6) + num);
 							num++;
-							System.out.println(chuck[i].getText());
 						}
 					} else {
 						int num = Integer.valueOf(str.substring(1));

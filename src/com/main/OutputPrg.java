@@ -10,7 +10,7 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-public class ReadFile {
+public class OutputPrg implements ReadFileApi {
 	private static Vector<String> allFile = new Vector<String>();
 	private static Vector<String> init = new Vector<String>();
 	private static Vector<String> end = new Vector<String>();
@@ -26,12 +26,12 @@ public class ReadFile {
 	private static int coordOffset;
 	private static int startOffset = 1;
 	private static int endOffset = -1;
-	private static String coord = "";
+	private static String coord = ""; // 儲存所有座標
 	private static boolean isPrepare;// 是否有預備刀
 	private static boolean isDebug = true;
 
 	// 建構子
-	public ReadFile(String filename) {
+	public OutputPrg(String filename) {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(filename));
 			String line = "";
@@ -90,9 +90,11 @@ public class ReadFile {
 		if (str.substring(0, 1).equals("G")) {
 			coordOffset = 1;
 			isPrepare = false;
+			System.out.println("此為無備刀程式");
 		} else {
 			coordOffset = 2;
 			isPrepare = true;
+			System.out.println("此為有備刀程式");
 		}
 		str = (String) allFile.get(startIndex + coordOffset);
 		// 判斷座標系是否有P值，並取座標值
@@ -106,8 +108,8 @@ public class ReadFile {
 		}
 		// 設定程式數目等於刀具數目
 		progNum = tools.size();
-		_prog = new Vector[progNum];
-		_end = new Vector[progNum];
+		_prog = new Vector[progNum]; // 用來放程式
+		_end = new Vector[progNum]; // 用來放程式結尾
 		for (int i = 0; i < progNum; i++) {
 			_prog[i] = new Vector<String>();
 			_end[i] = new Vector<String>();
@@ -144,7 +146,7 @@ public class ReadFile {
 		}
 	}
 
-	public static void outputFile(String[] coords, String fileName) {
+	public void outputFile(String[] coords, String fileName) {
 		File file = new File("EROWA_" + fileName);
 		int copyTimes = coords.length;
 		tmp = new Vector[_prog.length][copyTimes];
@@ -192,18 +194,17 @@ public class ReadFile {
 						}
 					} else {
 						if (coords[0].length() == 8) {
-							String str = (String) tmp[i][j].get(2);
-							System.out.println(str);
+							String str = (String) tmp[i][j].get(0);
 							String tmpStr = str.substring(3, 11);
 							String str1 = str.replaceFirst(tmpStr, coords[j]);
 							tmp[i][j].set(2, str1);
 						} else if (coords[0].length() == 7) {
-							String str = (String) tmp[i][j].get(2);
+							String str = (String) tmp[i][j].get(0);
 							String tmpStr = str.substring(3, 10);
 							String str1 = str.replaceFirst(tmpStr, coords[j]);
 							tmp[i][j].set(2, str1);
 						} else {
-							String str = (String) tmp[i][j].get(2);
+							String str = (String) tmp[i][j].get(0);
 							String tmpStr = str.substring(3, 6);
 							String str1 = str.replaceFirst(tmpStr, coords[j]);
 							tmp[i][j].set(2, str1);
@@ -217,25 +218,90 @@ public class ReadFile {
 		// loop for replace oldCoord to newCoord to the last program
 
 		if (progNum > 1) {
-			for (int i = 0; i < copyTimes; i++) {
-				if (coords[0].length() == 8) {
-					String str = (String) tmp[_prog.length - 1][i].get(0);
-					System.out.println(str);
-					String tmpStr = str.substring(3, 11);
-					String str1 = str.replaceFirst(tmpStr, coords[i]);
-					tmp[_prog.length - 1][i].set(0, str1);
-				} else if (coords[0].length() == 7) {
-					String str = (String) tmp[_prog.length - 1][i].get(0);
-					System.out.println("最後一把刀要被取代座標的程式碼為：" + str);
-					String tmpStr = str.substring(3, 10);
-					String str1 = str.replaceFirst(tmpStr, coords[i]);
-					tmp[_prog.length - 1][i].set(0, str1);
-				} else {
-					String str = (String) tmp[_prog.length - 1][i].get(0);
-					String tmpStr = str.substring(3, 6);
-					String str1 = str.replaceFirst(tmpStr, coords[i]);
-					tmp[_prog.length - 1][i].set(0, str1);
+			if (isPrepare) {
+				for (int i = 0; i < copyTimes; i++) {
+					if (coords[0].length() == 8) {
+						String str = (String) tmp[_prog.length - 1][i].get(0);
+						String tmpStr = str.substring(3, 11);
+						String str1 = str.replaceFirst(tmpStr, coords[i]);
+						tmp[_prog.length - 1][i].set(0, str1);
+					} else if (coords[0].length() == 7) {
+						String str = (String) tmp[_prog.length - 1][i].get(0);
+						String tmpStr = str.substring(3, 10);
+						String str1 = str.replaceFirst(tmpStr, coords[i]);
+						tmp[_prog.length - 1][i].set(0, str1);
+					} else {
+						String str = (String) tmp[_prog.length - 1][i].get(0);
+						String tmpStr = str.substring(3, 6);
+						String str1 = str.replaceFirst(tmpStr, coords[i]);
+						tmp[_prog.length - 1][i].set(0, str1);
+					}
 				}
+			} else {
+				for (int i = 0; i < copyTimes; i++) {
+					if (coords[0].length() == 8) {
+						String str = (String) tmp[_prog.length - 1][i].get(0);
+						String tmpStr = str.substring(3, 11);
+						String str1 = str.replaceFirst(tmpStr, coords[i]);
+						tmp[_prog.length - 1][i].set(2, str1);
+					} else if (coords[0].length() == 7) {
+						String str = (String) tmp[_prog.length - 1][i].get(0);
+						String tmpStr = str.substring(3, 10);
+						String str1 = str.replaceFirst(tmpStr, coords[i]);
+						tmp[_prog.length - 1][i].set(2, str1);
+					} else {
+						String str = (String) tmp[_prog.length - 1][i].get(0);
+						String tmpStr = str.substring(3, 6);
+						String str1 = str.replaceFirst(tmpStr, coords[i]);
+						tmp[_prog.length - 1][i].set(2, str1);
+					}
+				}
+			}
+		} else {
+			try {
+				for (int i = 0; i < tmp.length; i++)
+					for (int j = 0; j < tmp[i].length; j++) {
+						if (isPrepare) {
+							if (coords[0].length() == 8) {
+								String str = (String) tmp[i][j].get(0);
+								String tmpStr = str.substring(3, 11);
+								String str1 = str.replaceFirst(tmpStr, coords[j]);
+								System.out.println(tmp[i][j]);
+								tmp[i][j].set(0, str1);
+							} else if (coords[0].length() == 7) {
+								String str = (String) tmp[i][j].get(0);
+								String tmpStr = str.substring(3, 10);
+								String str1 = str.replaceFirst(tmpStr, coords[j]);
+								tmp[i][j].set(0, str1);
+							} else {
+								String str = (String) tmp[i][j].get(0);
+								String tmpStr = str.substring(3, 6);
+								String str1 = str.replaceFirst(tmpStr, coords[j]);
+								tmp[i][j].set(0, str1);
+							}
+						} else {
+							if (coords[0].length() == 8) {
+								String str = (String) tmp[i][j].get(0);
+								String tmpStr = str.substring(3, 11);
+								String str1 = str.replaceFirst(tmpStr, coords[j]);
+								System.out.println(tmp[i][j]);
+								tmp[i][j].set(0, str1);
+								System.out.println(tmp[i][j]);
+							} else if (coords[0].length() == 7) {
+								String str = (String) tmp[i][j].get(0);
+								String tmpStr = str.substring(3, 10);
+								String str1 = str.replaceFirst(tmpStr, coords[j]);
+								tmp[i][j].set(2, str1);
+							} else {
+								String str = (String) tmp[i][j].get(0);
+								String tmpStr = str.substring(3, 6);
+								String str1 = str.replaceFirst(tmpStr, coords[j]);
+								tmp[i][j].set(2, str1);
+							}
+						}
+					}
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "取代座標時發生錯誤：" + e);
 			}
 		}
 
@@ -243,8 +309,8 @@ public class ReadFile {
 		try {
 			String defaultEncodingName = System.getProperty("file.encoding");
 			System.setProperty("file.encoding", defaultEncodingName);
-			PrintWriter writer = new PrintWriter(new BufferedWriter(
-					new FileWriter(fileName)));
+			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(
+					fileName)));
 
 			// write init
 			for (int i = 0; i < init.size(); i++)
@@ -263,8 +329,8 @@ public class ReadFile {
 					}
 					if (isDebug) {
 						writer.println("(---------------------------------)");
-						writer.println("(  第 [" + (i + 1) + "] 把刀的第 ["
-								+ (j + 1) + "] 個座標    )");
+						writer.println("(  第 [" + (i + 1) + "] 把刀的第 [" + (j + 1)
+								+ "] 個座標    )");
 						writer.println("(---------------------------------)");
 					}
 				}
@@ -273,8 +339,7 @@ public class ReadFile {
 					if (i != tmp.length - 1) {
 						// 最後一把刀不印出程式結尾
 						writer.println("(---------------------------------)");
-						writer.println("(      第 " + (i + 1)
-								+ " 把刀的程式結尾       )");
+						writer.println("(      第 " + (i + 1) + " 把刀的程式結尾       )");
 						writer.println("(---------------------------------)");
 					}
 				}
@@ -320,10 +385,8 @@ public class ReadFile {
 		for (int i = 0; i < vector.size(); i++)
 			if (vector.get(i).equals(startMark) || vector.get(i).equals("M06"))
 				startPoint.addElement(i + startOffset);
-			else if (vector.get(i).equals(endMark)
-					|| vector.get(i).equals("M05")) {
-				if (vector.get(i - 1).equals("M9")
-						|| vector.get(i - 1).equals("M09")) {
+			else if (vector.get(i).equals(endMark) || vector.get(i).equals("M05")) {
+				if (vector.get(i - 1).equals("M9") || vector.get(i - 1).equals("M09")) {
 					endPoint.addElement(i - 1);
 				} else if (vector.get(i - 2).equals("M9")
 						|| vector.get(i - 2).equals("M09")) {
@@ -338,7 +401,7 @@ public class ReadFile {
 
 	private static void copyInit(Vector startIndex, boolean isPrepare) {
 		if (isPrepare == false) {
-			for (int i = 0; i < (Integer) startIndex.get(0) - 2; i++)
+			for (int i = 0; i < (Integer) startIndex.get(0); i++)
 				init.addElement(allFile.get(i));
 		} else {
 			for (int i = 0; i < (Integer) startIndex.get(0) + 1; i++)
@@ -350,7 +413,7 @@ public class ReadFile {
 			boolean isPrepare) {
 		if (isPrepare == false) {
 			for (int i = 1; i <= progNum; i++)
-				for (int j = (Integer) startIndex.get(i - 1) - 2; j < (Integer) endIndex
+				for (int j = (Integer) startIndex.get(i - 1); j < (Integer) endIndex
 						.get(i - 1); j++) {
 					_prog[i - 1].addElement(allFile.get(j));
 				}
@@ -376,7 +439,7 @@ public class ReadFile {
 		} else {
 			for (int i = 1; i < progNum; i++)
 				for (int j = (Integer) endIndex.get(i - 1); j < (Integer) startIndex
-						.get(i) + 1; j++)
+						.get(i); j++)
 					_end[i - 1].addElement(allFile.get(j));
 		}
 	}
@@ -385,4 +448,5 @@ public class ReadFile {
 		for (int i = ((Integer) endIndex.get(progNum - 1)); i < allFile.size(); i++)
 			end.addElement(allFile.get(i));
 	}
+
 }

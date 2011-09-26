@@ -40,8 +40,8 @@ public class mainFrame extends JFrame {
 		if (ReadWriteRegisty.ReadValue("transformerv1", "writable").equals(
 				"writable")) {
 			// 若softwareStatus狀態為actived則直接啟動軟體
-			if (ReadWriteRegisty.ReadValue("transformerv1", "softwareStatus")
-					.equals("actived")) {
+			if (ReadWriteRegisty.ReadValue("transformerv1", "softwareStatus").equals(
+					"actived")) {
 				Frame frame = new Frame();
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setSize(650, 500);
@@ -109,13 +109,12 @@ public class mainFrame extends JFrame {
 		} else {
 			try {
 				// 如果使用者修改系統日期，直接改成試用到期
-				if (new Date().compareTo(simpleDateFormat
-						.parse(ReadWriteRegisty.ReadValue("transformerv1",
-								"currentTime"))) <= 0) {// 比較兩個時間的先後
+				if (new Date().compareTo(simpleDateFormat.parse(ReadWriteRegisty
+						.ReadValue("transformerv1", "currentTime"))) <= 0) {// 比較兩個時間的先後
 					JOptionPane.showMessageDialog(mainFrame.this,
 							"軟體已經試用到期，如果您想繼續使用，請購買序號進行註冊使用");
-					ReadWriteRegisty.WriteValue("transformerv1",
-							"softwareStatus", "expired");
+					ReadWriteRegisty.WriteValue("transformerv1", "softwareStatus",
+							"expired");
 					ZHUSE = -1; // 將註冊天數設定為-1
 
 				}
@@ -124,8 +123,8 @@ public class mainFrame extends JFrame {
 			}
 			// 如果登錄編輯程式中目前軟體狀態為trial
 			if (ZHUSE > 0
-					|| ReadWriteRegisty.ReadValue("transformerv1",
-							"softwareStatus").equals("trial")) {
+					|| ReadWriteRegisty.ReadValue("transformerv1", "softwareStatus")
+							.equals("trial")) {
 				try {
 					// 將目前的時間寫入登錄編輯程式
 					ReadWriteRegisty.WriteValue("transformerv1", "currentTime",
@@ -138,8 +137,8 @@ public class mainFrame extends JFrame {
 					Date date_start = simpleDateFormat2.parse(simpleDateFormat
 							.format(new Date()));
 					// 格式化終止時間
-					Date date_end = simpleDateFormat2.parse(ReadWriteRegisty
-							.ReadValue("transformerv1", "firstUseTime"));
+					Date date_end = simpleDateFormat2.parse(ReadWriteRegisty.ReadValue(
+							"transformerv1", "firstUseTime"));
 					Calendar cal_start = Calendar.getInstance(); // 取得Calendar範例
 					cal_start.setTime(date_start); // 將時間指定給Calendar物件
 					Calendar cal_end = Calendar.getInstance();
@@ -154,9 +153,8 @@ public class mainFrame extends JFrame {
 		}
 		// 如果註冊時間小於0或著登錄編輯程式中的標記為expired
 		if (ZHUSE <= 0
-				|| ReadWriteRegisty
-						.ReadValue("transformerv1", "softwareStatus").equals(
-								"expired")) {
+				|| ReadWriteRegisty.ReadValue("transformerv1", "softwareStatus")
+						.equals("expired")) {
 			ZHUSE = 0; // 將登錄編輯程式試用天數清為0
 		}
 		zhuce.setText("剩餘" + ZHUSE + "天");
@@ -172,8 +170,8 @@ public class mainFrame extends JFrame {
 				// 如果使用者選擇了『我想試用該軟體』的選項按鈕
 				if (trialButton.isSelected()) {
 					// 如果已到試用期限
-					if (ReadWriteRegisty.ReadValue("transformerv1",
-							"softwareStatus").equals("expired")) {
+					if (ReadWriteRegisty.ReadValue("transformerv1", "softwareStatus")
+							.equals("expired")) {
 						// 彈出提示對話方塊
 						JOptionPane.showMessageDialog(mainFrame.this,
 								"軟體已經試用到期，如果你想繼續使用，請購買序號進行註冊使用");
@@ -183,8 +181,8 @@ public class mainFrame extends JFrame {
 						// 如果註冊變數為0，則彈出提示對話方塊，並將登錄編輯程式中的標示修改
 						JOptionPane.showMessageDialog(mainFrame.this,
 								"軟體已經試用到期，如果你想繼續使用，請購買序號進行註冊使用");
-						ReadWriteRegisty.WriteValue("transformerv1",
-								"softwareStatus", "expired");
+						ReadWriteRegisty.WriteValue("transformerv1", "softwareStatus",
+								"expired");
 						return;
 					} else {
 						setVisible(false);
@@ -204,7 +202,8 @@ public class mainFrame extends JFrame {
 		leftPanel.setBackground(Color.WHITE);
 		JLabel image = new JLabel();
 		JLabel letter1 = new JLabel();
-		letter1.setText("<html><b>關於註冊</b><br>註冊時需要使用者名稱與註冊碼，請向力永公司索取<br><br>如果你不想啟動本軟體，可以在試用狀態下使用，並且可以在試用期內隨時啟動本軟體。</html>");
+		letter1
+				.setText("<html><b>關於註冊</b><br>註冊時需要使用者名稱與註冊碼，請向力永公司索取<br><br>如果你不想啟動本軟體，可以在試用狀態下使用，並且可以在試用期內隨時啟動本軟體。</html>");
 		JLabel letter2 = new JLabel();
 		leftPanel.add(image);
 		image.setBounds(20, 20, 130, 100);
